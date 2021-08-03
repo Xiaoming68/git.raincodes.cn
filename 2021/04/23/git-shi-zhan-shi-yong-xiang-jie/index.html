@@ -493,14 +493,20 @@
 <li><code>git add .</code> 添加到暂存库</li>
 <li><code>git comit -m&#39;备注&#39;</code> 备注</li>
 <li><code>git reset &#39;file&#39;</code> 回滚文件</li>
-<li><code>git checkout &#39;file&#39;</code> 切换分支</li>
+<li><code>git checkout dev</code> 切换分支</li>
 <li><code>git push / git push origin HEAD</code> 提交代码 / 提交代码到远端</li>
+<li><code>git stash list</code> 查看本地暂存文件列表  </li>
+<li><code>git stash</code> 暂存：当前分支变动文件到暂存区</li>
+<li><code>git stash save &#39;备注&#39;</code> 暂存：当前分支变动文件到暂存区，并且备注</li>
+<li><code>git stash pop</code> 把暂存区的所有文件拉到本地，并删除暂存区的所有记录</li>
+<li><code>git stash apply 0</code> 把暂存区某次记录的文件拉到本地（不会删除暂存区的记录）</li>
 <li><code>git log</code> 查看log日志</li>
 <li><code>git reflog</code> 查看提交记录</li>
 <li><code>git reset --hard &#39;logid&#39;</code> 回滚到某个记录</li>
 <li><code>git branch dev</code> 创建dev分支  </li>
 <li><code>git merge &#39;branch&#39;</code> 合并分支</li>
 <li><code>git branch -vv</code> 查看当前分支以及分支追踪远端的分支的信息</li>
+<li><code>git branch -m</code> 修改本地分支名称</li>
 <li><code>git checkout -b &#39;branch&#39; origin master</code> 新增分支并且追踪到 远端master分支</li>
 <li><code>git branch -d / -D &#39;branch&#39;</code> -d删除本地分支 / -D强制删除本地分支</li>
 <li><code>git push --delete origin branch</code> 删除远端master分支</li>
