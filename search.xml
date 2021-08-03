@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>网络协议梳理</title>
+      <link href="/2021/05/29/wang-luo-xie-yi-zhi-shi-shu-li/"/>
+      <url>/2021/05/29/wang-luo-xie-yi-zhi-shi-shu-li/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Mysql-主从复制</title>
+      <link href="/2021/05/29/mysql-zhu-cong-fu-zhi/"/>
+      <url>/2021/05/29/mysql-zhu-cong-fu-zhi/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> mysql </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Mysql-慢日志详解</title>
+      <link href="/2021/05/20/mysql-man-ri-zhi-xiang-jie/"/>
+      <url>/2021/05/20/mysql-man-ri-zhi-xiang-jie/</url>
+      
+        <content type="html"><![CDATA[<h3 id="mysql慢日志是什么？"><a href="#mysql慢日志是什么？" class="headerlink" title="mysql慢日志是什么？"></a>mysql慢日志是什么？</h3><p style="text-indent: 2em"> 慢查询日志由 long_query_time 执行时间超过几秒钟并且至少 `min_examined_row_limit` 需要检查行的 SQL 语句组成 。慢查询日志可用于查找需要很长时间执行的查询，因此可以进行优化。但是，检查长而缓慢的查询日志可能是一项耗时的任务。 </p><p style="text-indent: 2em"> mysql long_query_time: 默认值是 10 秒 </p><hr><h3 id="查看-操作慢日志"><a href="#查看-操作慢日志" class="headerlink" title="查看/操作慢日志"></a>查看/操作慢日志</h3><p>登录mysql终端查看慢日志是否开启：<code>show variables like &#39;%quer%&#39;;</code> 默认是关闭状态。</p><p><img src="https://img-blog.csdnimg.cn/20210530204100164.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><p>开始慢日志有两种返方式。（ 我们用第二种演示 ）</p><ul><li>可以直接修改 <code>my.cnf</code> 文件，永久有效；</li><li>终端执行此命令： <code>set global slow_query_log=1;</code> MySQL重启后则会失效；</li></ul><p><img src="https://img-blog.csdnimg.cn/2021053020500792.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><p>这边你也可以自定义慢日志文件地址：<code>set global slow_query_log_file=&#39;路径名&#39;;</code> 来设置你的慢查询日志想要存放的地址，我一般都使用默认的地址；</p><hr><p>开启慢日志，什么样的 SQL 语句会被记录到日志中全部取决于 <code>long_query_time</code> ，默认时间是 10 秒。<br><code>show variables like &#39;long_query_time&#39;;</code></p><p><img src="https://img-blog.csdnimg.cn/20210530211854318.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><hr><p>我们也可以去修改这个时间 ，设置阀值：<code>set global long_query_time = 5;</code><br><code>set global long_query_time = 5;</code></p><p><img src="https://img-blog.csdnimg.cn/20210530212210439.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><hr><p>我们可以发现修改后<strong>没有改变</strong>，这是为什么？是因为使用命令行操作的需要：断开当前会话窗口重新连接mysql, 再查看就好了！</p><p><img src="https://img-blog.csdnimg.cn/20210530212707662.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><hr><p>最后可以用终端方式查看慢查询记录，可以使用系统变量 <code>show global status like &#39;%slow_queries%&#39;;</code></p><p><img src="https://img-blog.csdnimg.cn/20210530224715975.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><hr><p>然后去看慢日志文件具体数据，就OK了：vim /usr/local/var/mysql/SuperBoss-slow.log ( 我的慢日志文件路径 !)</p><p><img src="https://img-blog.csdnimg.cn/20210530225037399.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> mysql </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> mysql </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>RabbitMQ-实战篇</title>
+      <link href="/2021/05/19/rabbitmq-shi-zhan-pian/"/>
+      <url>/2021/05/19/rabbitmq-shi-zhan-pian/</url>
+      
+        <content type="html"><![CDATA[<h3 id="实战开始"><a href="#实战开始" class="headerlink" title="实战开始"></a>实战开始</h3>]]></content>
+      
+      
+      <categories>
+          
+          <category> tool </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Rabbitmq </tag>
+            
+            <tag> 消息中间件 </tag>
+            
+            <tag> mq </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>php自动加载-autoload详解</title>
+      <link href="/2021/05/19/php-zi-dong-jia-zai-autoload-xiang-jie/"/>
+      <url>/2021/05/19/php-zi-dong-jia-zai-autoload-xiang-jie/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> php </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> php </tag>
+            
+            <tag> composer </tag>
+            
+            <tag> autoload </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Mysql-Innodb锁详解</title>
+      <link href="/2021/05/19/mysql-innodb-suo-xiang-jie/"/>
+      <url>/2021/05/19/mysql-innodb-suo-xiang-jie/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> mysql </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Docker-入门篇</title>
+      <link href="/2021/04/26/docker-ru-men-pian/"/>
+      <url>/2021/04/26/docker-ru-men-pian/</url>
+      
+        <content type="html"><![CDATA[<h3 id="docker-解决的痛点"><a href="#docker-解决的痛点" class="headerlink" title="docker 解决的痛点"></a>docker 解决的痛点</h3><p style="text-indent: 2em">一种新的技术的诞生，往往是解决某件事情的 痛点 、难点，我们先来了解一下，它究竟解决了什么问题？</p><p style="text-indent: 2em"> 我们可以大致分为几个模块 </p><ol><li><h2 id="快速部署环境"><a href="#快速部署环境" class="headerlink" title="快速部署环境"></a>快速部署环境</h2></li><li></li></ol><hr><h3 id="docker-常用的命令"><a href="#docker-常用的命令" class="headerlink" title="docker 常用的命令"></a>docker 常用的命令</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker ps             查看运行中容器docker imagesdocker rundocker pull           拉去远端镜像<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> docker&amp;k8s </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> docker </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Git实战使用详解</title>
+      <link href="/2021/04/23/git-shi-zhan-shi-yong-xiang-jie/"/>
+      <url>/2021/04/23/git-shi-zhan-shi-yong-xiang-jie/</url>
+      
+        <content type="html"><![CDATA[<h3 id="介绍git"><a href="#介绍git" class="headerlink" title="介绍git"></a>介绍git</h3><p style="text-indent: 2em"> git 是一个开源的分布式版本控制系统，可以快速、高效的多人管理项目。在处理大小项目上非常出众。</p><h3 id="git-VS-svn"><a href="#git-VS-svn" class="headerlink" title="git VS svn"></a>git VS svn</h3><ol><li><p>分布式 vs 集中式</p><ul><li>Subversion属于集中式的版本控制系统</li><li>Git属于分布式的版本控制系统</li></ul></li><li><p>git的速度快，svn速度慢</p></li><li><p>git commit 不需要网路，而svn需要</p></li></ol><h3 id="git仓库"><a href="#git仓库" class="headerlink" title="git仓库"></a>git仓库</h3><ul><li>主要分为三个仓库：<code>工作库</code> 、 <code>暂存库</code> 、 <code>版本库</code><ul><li>工作库：项目目录文件</li><li>暂存库：项目目录下的 <code>.git</code> 目录里的 <code>index</code> </li><li>版本库：项目目录下的 <code>.git/refs/heads</code> 目录里的分支</li></ul></li></ul><h3 id="git流程图"><a href="#git流程图" class="headerlink" title="git流程图"></a>git流程图</h3><p><img src="https://img-blog.csdnimg.cn/20210508110117647.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><h3 id="git常用命令"><a href="#git常用命令" class="headerlink" title="git常用命令"></a>git常用命令</h3><p style="text-indent: 2em"> 这些命令足够你在项目开发中使用的了 </p><ul><li><code>git clone &#39;url&#39;</code> 克隆远端代码</li><li><code>git init</code> 初始化git</li><li><code>git pull</code> 拉去代码</li><li><code>git status</code> 查看状态</li><li><code>git restore .</code> 撤销所有的修改记录</li><li><code>git diff .</code> 查看差异  </li><li><code>git add .</code> 添加到暂存库</li><li><code>git comit -m&#39;备注&#39;</code> 备注</li><li><code>git reset &#39;file&#39;</code> 回滚文件</li><li><code>git checkout &#39;file&#39;</code> 切换分支</li><li><code>git push / git push origin HEAD</code> 提交代码 / 提交代码到远端</li><li><code>git log</code> 查看log日志</li><li><code>git reflog</code> 查看提交记录</li><li><code>git reset --hard &#39;logid&#39;</code> 回滚到某个记录</li><li><code>git branch dev</code> 创建dev分支  </li><li><code>git merge &#39;branch&#39;</code> 合并分支</li><li><code>git branch -vv</code> 查看当前分支以及分支追踪远端的分支的信息</li><li><code>git checkout -b &#39;branch&#39; origin master</code> 新增分支并且追踪到 远端master分支</li><li><code>git branch -d / -D &#39;branch&#39;</code> -d删除本地分支 / -D强制删除本地分支</li><li><code>git push --delete origin branch</code> 删除远端master分支</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> tool </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> git </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Swoole-入门篇</title>
+      <link href="/2021/04/11/swoole-ru-men-pian/"/>
+      <url>/2021/04/11/swoole-ru-men-pian/</url>
+      
+        <content type="html"><![CDATA[<p><img src="https://img-blog.csdnimg.cn/20210411165900809.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><hr><h3 id="Swoole-初识"><a href="#Swoole-初识" class="headerlink" title="Swoole-初识"></a>Swoole-初识</h3><p style="text-indent: 2em"> Swoole 使 PHP 开发人员可以编写高性能高并发的 TCP、UDP、Unix Socket、HTTP、 WebSocket 等服务，让 PHP 不再局限于 Web 领域。 </p><p style="text-indent: 2em"> Swoole 是一种高级PHP开发框架，框架不是为了提升网站的性能，是为了提升网站的开发效率、最少的性能损耗，换取最大的开发效率。 </p><hr><h3 id="Swoole-结构图"><a href="#Swoole-结构图" class="headerlink" title="Swoole-结构图"></a>Swoole-结构图</h3><p><img src="https://img-blog.csdnimg.cn/20210411165047209.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><hr><h3 id="Swoole-流程介绍"><a href="#Swoole-流程介绍" class="headerlink" title="Swoole-流程介绍"></a>Swoole-流程介绍</h3><ol><li>Master<ul><li>主进程处理核心事物的驱动</li></ul></li><li>Reactor  [riˈæktər] ( 反应堆 )<ul><li>负责维护客户端 <code>TCP</code> 连接、处理网络IO、处理协议、收发数据。</li><li>完全是异步非阻塞的模式。</li><li>全部为C代码，除 <code>Start/Shudown</code> 事件回调外，不执行任何 PHP 代码。</li><li>将 <code>TCP</code> 客户端发来的数据缓冲、拼接、拆分成完整的一个请求数据包。</li><li><code>Reactor</code> 以多线程的方式运行。</li></ul></li><li>Manager<ul><li>Swoole中 <code>worker/task</code> 进程都是由Manager进程 <code>Fork(可以理解成：分支)</code> 并管理的。 </li><li>子进程结束运行时，Manager 进程负责回收此子进程，避免成为僵尸进程。并创建新的子进程。</li><li>服务器关闭时，Manager 进程将发送信号给所有子进程，通知子进程关闭服务。</li><li>服务器 <code>reload</code> 时，Manager 进程会逐个关闭 / 重启子进程。</li></ul></li><li>Worker<ul><li>接受由 <code>Reactor</code> 线程投递的请求数据包，并执行 PHP 回调函数处理数据。</li><li>生成响应数据并发给 Reactor 线程，由 Reactor 线程发送给 TCP 客户端。</li><li>可以是异步非阻塞模式，也可以是同步阻塞模式。</li><li><code>Worker</code> 以多进程的方式运行。</li></ul></li><li>Task <ul><li>接受由 <code>Worker</code> 进程通过 swoole_server-&gt;task/taskwait 方法投递的任务。</li><li>处理任务，并将结果数据返回（使用 swoole_server-&gt;finish）给 Worker 进程。</li><li>完全是同步阻塞模式。</li><li><code>TaskWorker</code> 以多进程的方式运行。</li></ul></li></ol><hr><h3 id="Swoole-重点三者的关系"><a href="#Swoole-重点三者的关系" class="headerlink" title="Swoole-重点三者的关系:"></a>Swoole-重点三者的关系:</h3><ul><li>三者是指：<code>Reactor、 Worker、 TaskWorker</code> 。</li></ul><ol><li><p>可以理解为 <code>Reactor</code> 就是 nginx，<code>Worker</code> 就是 php-fpm。<code>Reactor</code> 线程异步并行地处理网络请求，然后再转发给Worker进程中去处理。<code>Reactor</code> 和 <code>Worker</code> 间通过 <code>UnixSocket</code> 进行通信。</p></li><li><p>在 php-fpm 的应用中，经常会将一个任务异步投递到 Redis 等队列中，并在后台启动一些php进程异步地处理这些任务。<br>Swoole 提供的 <code>TaskWorker</code> 是一套更完整的方案，将任务的投递、队列、php 任务处理进程管理合为一体。通过底层提供的API可以非常简单地实现异步任务的处理。<br>另外 <code>TaskWorker</code> 还可以在任务执行完成后，再返回一个结果反馈到 <code>Worker</code>。</p></li><li><p>Swoole 的 <code>Reactor、 Worker、 TaskWorker</code> 之间可以紧密的结合起来，提供更高级的使用方式。</p></li></ol><hr><h3 id="Swoole-举例说明运行原理"><a href="#Swoole-举例说明运行原理" class="headerlink" title="Swoole-举例说明运行原理"></a>Swoole-举例说明运行原理</h3><ul><li>一个更通俗的比喻，假设 Server 就是一个工厂，那 <code>Reactor</code> 就是销售，接受客户订单。而 <code>Worker</code> 就是技术经理，当销售接到订单后，Worker 去工作生产出客户要的东西。 而 <code>TaskWorker</code> 可以理解为码农，可以帮助 Worker 干些杂事，让 Worker 专心工作。</li></ul><ol><li><p>底层会为 <code>Worker</code> 进程 <code>TaskWorker</code> 进程分配一个唯一的ID。</p></li><li><p>不同的 <code>Worker</code> 和 <code>TaskWorker</code> 进程之间可以通过 <code>sendMessage</code> 接口进行通信。</p></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> tool </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Swoole </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Mac终端配置代理服务</title>
+      <link href="/2021/04/07/mac-zhong-duan-pei-zhi-dai-li-fu-wu/"/>
+      <url>/2021/04/07/mac-zhong-duan-pei-zhi-dai-li-fu-wu/</url>
+      
+        <content type="html"><![CDATA[<h3 id="了解Mac配置文件"><a href="#了解Mac配置文件" class="headerlink" title="了解Mac配置文件"></a>了解Mac配置文件</h3><ol><li>.bash_profile 中修改环境变量只对当前窗口有效。</li><li>.zshrc 则相当于 windows 的开机启动的环境变量。</li><li>配置完信息，需要 source 才能使用配置。<br><code>source ~/.zshrc</code><br>或<br><code>source ~/.bash_profile</code></li></ol><ul><li>个人推荐在 <strong>.zshrc</strong> 文件配置 ！ </li></ul><hr><h3 id="查看当前-IP"><a href="#查看当前-IP" class="headerlink" title="查看当前-IP"></a>查看当前-IP</h3><ul><li>Mac 打开终端输入 <code>curl cip.cc</code> 结果如下：<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">IP: 223.1xx.xx.xx地址: 中国  上海运营商: 联通数据二: 上海市 | 联通数据三: 中国上海上海市 | 联通URL: http:&#x2F;&#x2F;www.cip.cc&#x2F;223.xxx.xx.xx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li></ul><hr><h3 id="开始配置信息"><a href="#开始配置信息" class="headerlink" title="开始配置信息"></a>开始配置信息</h3><h5 id="方法一-不推荐！"><a href="#方法一-不推荐！" class="headerlink" title="方法一 不推荐！"></a><strong>方法一 不推荐！</strong></h5><ul><li>打开代理，可以直接终端输入命令 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">export http_proxy&#x3D;socks5:&#x2F;&#x2F;11x.x.x.x:0000<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>或者<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">export http_proxy&#x3D;http:&#x2F;&#x2F;proxyAddress:port<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li><li>关闭代理<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">unset http_proxy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li></ul><hr><h5 id="方法二-推荐！"><a href="#方法二-推荐！" class="headerlink" title="方法二 推荐！"></a><strong>方法二 推荐！</strong></h5><ul><li>打开Mac终端，<code>vim ~/.zshrc</code> </li><li>把代理服务器地址写入 shell 配置文件 .zshrc ,这里我们可以用 <code>alias</code> 重命名一下方便使用<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">## Proxy Hostalias proxy&#x3D;&#39;export all_proxy&#x3D;socks5:&#x2F;&#x2F;11x.x.x.x:8888&#39;alias unproxy&#x3D;&#39;unset all_proxy&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre></li><li>最后一步，重新加载一下配置文件 <code>source ~/.zshrc</code> 重要一步 ! ! !</li><li>打开代理 <code>proxy</code></li><li>查看当前代理 <code>curl cip.cc</code><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">IP: 11x.xxx.xxx.xxx  地址: 中国  香港  xxxx.com数据二: 香港 | xxxx有限公司数据三:URL: http:&#x2F;&#x2F;www.cip.cc&#x2F;11x.xxx.xxx.xxx<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre></li><li>现在下载 <code>github</code> 的速度直接起飞 芜湖 ！！！</li><li>关闭代理，<code>unproxy</code> ，在查看一下IP <code>curl cip.cc</code> 就切回你之前的网络代理了</li></ul><hr><h3 id="结束-芜湖"><a href="#结束-芜湖" class="headerlink" title="结束-芜湖"></a>结束-芜湖</h3><p><img src="https://img-blog.csdnimg.cn/20210408132707543.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="11111"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> tool </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Mac </tag>
+            
+            <tag> 代理 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>RabbitMQ-入门篇</title>
+      <link href="/2021/04/05/rabbitmq-ru-men-pian/"/>
+      <url>/2021/04/05/rabbitmq-ru-men-pian/</url>
+      
+        <content type="html"><![CDATA[<h3 id="初步认识-MQ"><a href="#初步认识-MQ" class="headerlink" title="初步认识 MQ"></a>初步认识 MQ</h3><p style="text-indent: 2em"> MQ全程为 Message Queue，即消息队列。</p><p style="text-indent: 2em"> RabbitMQ 是由erlang语言开发，基于AMQP（Advanced Message Queue 高级消息队列）协议实现的消息队列。</p><h3 id="消息中间件场景"><a href="#消息中间件场景" class="headerlink" title="消息中间件场景"></a>消息中间件场景</h3><ul><li>分布式事物</li><li>跨系统数据传递</li><li>高并发的流量削峰</li><li>大数据分析与传递</li><li>数据的分发和异步处理</li></ul><h3 id="常见的中间件"><a href="#常见的中间件" class="headerlink" title="常见的中间件"></a>常见的中间件</h3><ul><li>ActiveMQ</li><li>RabbitMQ</li><li>Kafka</li><li>Rocket</li></ul><h3 id="Rabbit工作原理"><a href="#Rabbit工作原理" class="headerlink" title="Rabbit工作原理"></a>Rabbit工作原理</h3><ul><li><img src="https://img-blog.csdnimg.cn/20210405212836653.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li></ul><h3 id="Rabbit组成成员"><a href="#Rabbit组成成员" class="headerlink" title="Rabbit组成成员"></a>Rabbit组成成员</h3><ul><li><p>生产者（Producer）：发送消息的应用。</p><p><img src="https://img-blog.csdnimg.cn/20210405213339450.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li><li><p>消费者（Consumer）：接收消息的应用。</p></li><li><p>队列（Queue）：存储消息的缓存。<br><img src="https://img-blog.csdnimg.cn/20210405213512259.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li><li><p>消息（Message）：由生产者通过RabbitMQ发送给消费者的信息。</p></li><li><p>连接（Connection）：连接RabbitMQ和应用服务器的TCP连接。</p></li><li><p>通道（Channel）：连接里的一个虚拟通道。当你通过消息队列发送或者接收消息时，这个操作都是通过通道进行的。</p></li><li><p>交换机（Exchange）：交换机负责从生产者那里接收消息，并根据交换类型分发到对应的消息列队里。要实现消息的接收，一个队列必须到绑定一个交换机。<br><img src="https://img-blog.csdnimg.cn/20210405213816463.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li><li><p>绑定（Binding）：Exchange与Queue的同时，一般会指定一个Binding key。但Binding key并不是在所有情况下都生效，它依赖于Exchange Type，绑定是队列和交换机的一个关联连接。</p></li><li><p>路由键（Routing Key）：路由键是供交换机查看并根据键来决定如何分发消息到列队的一个键。路由键可以说是消息的目的地址。</p></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> tool </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Rabbitmq </tag>
+            
+            <tag> 消息中间件 </tag>
+            
+            <tag> mq </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>小白手动安装Win10系统</title>
+      <link href="/2021/04/04/xiao-bai-shou-dong-an-zhuang-win10-xi-tong/"/>
+      <url>/2021/04/04/xiao-bai-shou-dong-an-zhuang-win10-xi-tong/</url>
+      
+        <content type="html"><![CDATA[<p><img src="https://img-blog.csdnimg.cn/2021040416541149.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><p>win10系统渐渐成为主流，新机预装的都是win10 64位家庭版，有些用户电脑是很早以前买的，打算装个win10系统，但是自己不会装，想找人装一个win10系统不知道要多少钱。</p><p><img src="https://img-blog.csdnimg.cn/20210404165654352.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><p>找人装个win10系统需要多少钱？一般找人装系统收费是几十块到一百块不等。很难受。</p><h3 id="WIN7-VS-WIN10"><a href="#WIN7-VS-WIN10" class="headerlink" title="WIN7 VS WIN10:"></a>WIN7 VS WIN10:</h3><p>先了解一下win7和win10的一些区别，看个人使用习惯，用途。（个人推荐安装win10系统）</p><p><img src="https://img-blog.csdnimg.cn/20210404165815326.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><ul><li><p><strong>稳定性能</strong></p><p>Win7给我们的第一印象就是稳定了，Win7系统的稳定性是大家公认的。而Win10系统由于是近几年才推出的，有很多问题还没完善，所以稳定性方面就显得比较差了。如果Win10的稳定性要和Win的稳定性对比的话，那只能算是及格吧！<br><img src="https://img-blog.csdnimg.cn/2021040417000815.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li><li><p><strong>强制更新</strong></p><p>Win10有一个问题是让大家很反感的，那就是强制更新了。很多时候，我们在关机的时候，它总是会莫名其妙地提醒我们计算机在更新中，切勿切断电源。这个强制更新也就罢了，关键是更新完之后我们还不知道它更新了什么。所以，在系统更新上，Win7就显得比Win10好多了。</p></li><li><p><strong>操作简单</strong></p><p>很多人之所以喜欢Win7，主要是因为它的操作系统比较简单，很多地方都设置得比较人性化。而Win10系统的设置，则让人感到太过花俏了，操作起来也复杂了许多。</p></li><li><p><strong>隐私保护</strong></p><p>Win10在更新的时候是需要收集用户的相关信息的，而且是强制性的，很多用户对于这个协议是很反感的。我们在上网的时候，说不能就会有一双看不见的眼睛在盯着我们的网络，我们的系统。这样一来，我们在上网的时候就毫无隐私可言了。<br><img src="https://img-blog.csdnimg.cn/20210404170139147.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li><li><p><strong>安全性能</strong></p><p>就目前而言，随着社会科技的发展，Win7系统的安全性能可能会比不上采用了最新技术的Win10系统，从而导致电脑出现许许多多的漏洞。所以，在安全性能上，Win10系统又会比Win7系统更好。<br>通过上面的简单了解，也可以自己去百度搜一下，根据自己喜欢的去安装，用起来也顺手。</p></li></ul><h3 id="系统安装："><a href="#系统安装：" class="headerlink" title="系统安装："></a>系统安装：</h3><h4 id="准备的材料"><a href="#准备的材料" class="headerlink" title="准备的材料"></a>准备的材料</h4><ul><li>优盘一个 &lt;= 8G<br>一台好的电脑下载一个 ：老毛桃软件<br>win10的系统.iso(网上一下堆，可以找个靠谱的下载系统，后缀是 .iso)<br><img src="https://img-blog.csdnimg.cn/20210404170324841.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li></ul><h4 id="制作系统盘"><a href="#制作系统盘" class="headerlink" title="制作系统盘"></a>制作系统盘</h4><ol start="3"><li><p><strong>开始制作</strong></p><p>打开下载的 老毛桃，u启动装机版，将准备好的u盘插入电脑usb接口并静待软件对u盘进行识别，由于此次u启动采用全新功能智能模式，可为u盘自动选择兼容性强与适应性高的方式进行制作，相较过去版本可省去多余的选择操作。故而建议保持当前默认参数设置，直接点击  <strong>开始制作</strong>。<br><img src="https://img-blog.csdnimg.cn/20210404170421681.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li><li><p>此时，弹出的警告窗口中告知会清除u盘上的所有数据，请确认u盘中数据是否另行备份，确认完成后点击  <strong>确定</strong>。<br><img src="https://img-blog.csdnimg.cn/20210404170619145.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li><li><p>制作u盘启动盘需要一点时间，制作过程请勿操作与u盘相关的软件，静候制作过程结束。<br><img src="https://img-blog.csdnimg.cn/20210404170725804.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li></ol><h4 id="测试制作镜像"><a href="#测试制作镜像" class="headerlink" title="测试制作镜像"></a>测试制作镜像</h4><ol start="6"><li><p>待制作完成后，我们可点击“是”对制作好的u盘启动盘进行模拟启动测试。<br><img src="https://img-blog.csdnimg.cn/20210404170812548.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li><li><p>若看到以下启动界面，则说明u盘启动盘已制作成功（注意：此功能仅作启动测试，切勿进一步操作），最后按组合键“Ctrl+Alt”释放出鼠标，点击右上角的关闭图标退出模拟启动测试。</p></li><li><p>以上就是u启动制作u盘启动盘的所有相关内容，启动盘就做好了。接下来就是安装引导。</p></li></ol><h4 id="安装引导"><a href="#安装引导" class="headerlink" title="安装引导"></a>安装引导</h4><p>电脑型号不一样的 启动快捷键引导也不一样，自己可以去百度一下。（easily）<br><img src="https://img-blog.csdnimg.cn/20210404171126242.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p><ol><li><p>第一步：将制作好的老毛桃装机版启动u盘插入电脑usb接口（如果是台式机，建议插在主机箱的后置接口），然后开启电脑，等到屏幕上出现开机画面后按快捷键进入到老毛桃主菜单页面，接着将光标移至“【02】老毛桃WIN8 PE标准版（新机器）”，按回车键确认。<br><img src="https://img-blog.csdnimg.cn/2021040417134395.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li><li><p>进入pe系统后，鼠标左键双击打开桌面上的老毛桃PE装机工具。打开工具主窗口后，点击映像文件路径后面的“浏览”按钮。<br><img src="https://img-blog.csdnimg.cn/2021040417142512.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li><li><p>接着找到并选中u盘启动盘中的win10系统iso镜像文件，点击 <strong>打开</strong> 即可。<br><img src="https://img-blog.csdnimg.cn/20210404171832599.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li></ol><h4 id="选择镜像IOS"><a href="#选择镜像IOS" class="headerlink" title="选择镜像IOS"></a>选择镜像IOS</h4><ol start="4"><li><p>映像文件添加成功后，我们只需在分区列表中选择C盘作为系统盘，然后点击 <strong>确定</strong> 即可。<img src="https://img-blog.csdnimg.cn/20210404171929769.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li><li><p>随后会弹出一个询问框，提示用户即将开始安装系统。确认还原分区和映像文件无误后，点击 ** 确定** 。<br><img src="https://img-blog.csdnimg.cn/20210404172029390.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li><li><p>完成上述操作后，程序开始释放系统镜像文件，安装ghost win10系统。我们只需耐心等待操作完成并自动重启电脑即可。<br><img src="https://img-blog.csdnimg.cn/2021040417210136.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p></li></ol><h4 id="重启安装驱动"><a href="#重启安装驱动" class="headerlink" title="重启安装驱动"></a>重启安装驱动</h4><ol start="7"><li><p>安装完成会提示重启电脑，（也会有默认时间会自动重启）重启电脑后，把掉优盘，我们即可进入 <strong>ghost win10</strong> 系统桌面了。OK，成功了，<strong>Very easy！</strong></p></li><li><p>新安装的 <strong>系统</strong> 会有些驱动没有自带，下载一个 <strong>驱动精灵</strong> 检查一下驱动是否缺少，缺少安装后之后重启就OK了。 </p></li></ol><h4 id="win10-安装结束"><a href="#win10-安装结束" class="headerlink" title="win10-安装结束"></a>win10-安装结束</h4><ol start="8"><li>以上就是安装WINDOWS10的全过程，喜欢的帮忙点个赞，不懂得可以留言，知识互享，共同进步。<br><img src="https://img-blog.csdnimg.cn/20210404172254520.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MDc4MDEwNA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> tool </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Windows </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>front-test</title>
+      <link href="/2021/04/03/redis-test/"/>
+      <url>/2021/04/03/redis-test/</url>
+      
+        <content type="html"><![CDATA[<p><img src="../../img/front/img.png" alt="img.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> redis </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> test </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>front-test</title>
+      <link href="/2021/04/03/front-test/"/>
+      <url>/2021/04/03/front-test/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> front </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> test </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>
